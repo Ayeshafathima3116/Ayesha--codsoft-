@@ -1,0 +1,80 @@
+import tkinter as tk
+import math
+
+class ScientificCalculator:
+    def __init__(self, root):
+        self.root = root
+        self.entry_field = tk.Entry(root, width=25, font=('Arial', 18), justify='right')
+        self.entry_field.grid(row=0, column=0, columnspan=8)
+
+        self.create_buttons()
+
+    def create_buttons(self):
+        buttons = [
+            '7', '8', '9', '/',
+            '4', '5', '6', '*',
+            '1', '2', '3', '-',
+            '0', '.', '=', '+'
+        ]
+
+        row_val = 1
+        col_val = 0
+
+        for button in buttons:
+            tk.Button(self.root, text=button, width=5, command=lambda button=button: self.on_click(button)).grid(row=row_val, column=col_val)
+            col_val += 1
+            if col_val > 3:
+                col_val = 0
+                row_val += 1
+
+        function_buttons = [
+            'sin', 'cos', 'tan', 'sqrt',
+            'pi', 'e', 'exp', 'log',
+            'ln', 'log2', 'log10', 'x^2',
+            'x^3', '10^x', '1/x', 'abs'
+        ]
+
+        row_val = 1
+        col_val = 4
+
+        for button in function_buttons:
+            tk.Button(self.root, text=button, width=5, command=lambda button=button: self.on_click(button)).grid(row=row_val, column=col_val)
+            row_val += 1
+            if row_val > 4:
+                row_val = 1
+                col_val += 1
+
+    def on_click(self, button):
+        if button == '=':
+            try:
+                result = eval(self.entry_field.get())
+                self.entry_field.delete(0, 'end')
+                self.entry_field.insert(0, result)
+            except Exception as e:
+                self.entry_field.delete(0, 'end')
+                self.entry_field.insert(0, 'Error')
+        elif button == 'CE':
+            self.entry_field.delete(0, 'end')
+        elif button in ['sin', 'cos', 'tan', 'sqrt', 'exp', 'log', 'ln', 'log2', 'log10']:
+            self.entry_field.insert('end', button + '(')
+        elif button in ['pi', 'e']:
+            self.entry_field.insert('end', str(math.pi) if button == 'pi' else str(math.e))
+        elif button == 'x^2':
+            self.entry_field.insert('end', '**2')
+        elif button == 'x^3':
+            self.entry_field.insert('end', '**3')
+        elif button == '10^x':
+            self.entry_field.insert('end', '**10')
+        elif button == '1/x':
+            self.entry_field.insert('end', '**-1')
+        elif button == 'abs':
+            self.entry_field.insert('end', 'abs(')
+        else:
+            self.entry_field.insert('end', button)
+
+root = tk.Tk()
+root.title("Scientific Calculator")
+root.resizable(False, False)
+
+calculator = ScientificCalculator(root)
+root.mainloop()
